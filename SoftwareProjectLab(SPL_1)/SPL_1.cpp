@@ -15,6 +15,7 @@ char numerical_value[]={'0','1','2','3','4','5','6','7','8','9'};
 bool isDecimalpoint,isNegative1,isNegative2,isEqual;
 
 char variable[SIZE][20],stored_data[20];
+
 double matrix[SIZE][SIZE]={0},temp[SIZE][SIZE];
 
 //find determinant of matrix
@@ -39,18 +40,24 @@ double determinant_matrix(double array[][SIZE], unsigned int number)
                     }
                     continue;
                 }
+                double required_ratio = array[j][i] / array[j-1][i];
+
+                for(size_t k=0;k<number ;k++)
+                {
+                    array[j][k] = array[j][k] - required_ratio*array[j-1][k];
+                }
             }
         }
     }
 
-    //calculate determine of matrix required portion
+    //calculate determinant of matrix required portion of matrix
 
     double sum=-1;
     for(size_t i=0;i<number;i++)
         {
         sum*=array[i][i];
     }
-    //return determine as sum
+    //return determinant as sum
     return sum;
 }
 
@@ -67,7 +74,7 @@ double  compute_determinant(double array[][SIZE],unsigned int number)
         }
     }
     //return determinant of matrix
-    return determinant_matrix;
+    return determinant_matrix(memory,number);
 }
 
 // find variable coefficient we need to replace column_value with variable
@@ -94,13 +101,13 @@ bool has_infinity_solution(double result[],int number_of_variable)
     {
         if(result[i]!=0) //there are infinity solution if all determine are zero
         {
-            retrun false;
+            return false;
         }
     }
     return true;
 }
 
-void make_solution(int number_of_variable)
+void solve(int number_of_variable)
 {
 
     double result[SIZE];
@@ -120,7 +127,7 @@ void make_solution(int number_of_variable)
     //print Solution of the equations
     if(result[0]!=0)
     {
-        cout<<"\n\n Solurtion is: "<<endl;
+        cout<<"\n\nSolution is: "<<endl;
         for(size_t i=1;i<=number;i++)
         {
             cout<<variable[i-1]<<" = "<<result[i]/result[0]<<endl;
@@ -199,45 +206,39 @@ int isVariable(char variable[][20], char stored_data[], int *number_of_variable)
 
 //Locate the variables in matrix
 //This is done to ensure that the constant in each equation is located in the last column of the matrix
-void relocate_variable(int numberOfVariable)
+void relocate_variable(int variable_number)
 {
-    int relocate_index;
 
-    if(strlen(variable [numberOfVariable -1)!=0) //if the last variable in the variable array is not an empty string.
-    {
-        for(int i=0;i<numberOfVariable - 1;i++)
-        {
-            if(strlen(variable[i])== 0)
-            {
-                relocate_index = i;
+    int d_index;
+
+    if(strlen(variable[variable_number-1]) != 0){
+
+        for(int i=0;i<variable_number-1;i++){
+            if(strlen(variable[i]) == 0){
+                d_index = i;
             }
         }
 
-        char exchange_variable[20];
-        strcpy(exchange_variable,variable[relocate_index]);
-        // exchange two variable
+        char vari_swap[20];
+        strcpy(vari_swap, variable[d_index]);                           //swap two variable
+        strcpy(variable[d_index], variable[variable_number-1]);
+        strcpy(variable[variable_number-1], vari_swap);
 
-        strcpy(variable[exchange_index],variable[numberOfVariable-1]);
-        strcpy(variable[numberOfVariable -1],exchange_variable);
-
-        //swap two matrix column
-        for(int i=0;i<numberOfVariable-1;i++)
-        {
-            double temp = matrix[i][relocate_index];
-             matrix[i][relocate_index] = matrix[i][numberOfVariable-1];
-            matrix[i][numberOfVariable-1] = x;
+        for(int i=0;i<variable_number-1;i++){                               //swap two matrix column
+            double x = matrix[i][d_index];
+            matrix[i][d_index] = matrix[i][variable_number-1];
+            matrix[i][variable_number-1] = x;
         }
-
     }
 
-    for(int i=0;i<numberOfVariable-1;i++)
-    {
-        matrix[i][numberOfVariable-1] *= -1;
+    for(int i=0;i<variable_number-1;i++){
+        matrix[i][variable_number-1] *= -1;
     }
 }
 
+
 //This function extract the variables,constants from expressions
-int extract_from_expression(string str[], int n)
+int extract_all_from_expression(string str[], int n)
 {
 
     double coefficient=0;
@@ -273,13 +274,13 @@ int extract_from_expression(string str[], int n)
                 isDecimalpoint = true;
             }
             else if( data_type_checker(str[i][initial]) == CHARACTER){
-                store[store_index++] = str[i][initial];
+                stored_data[store_index++] = str[i][initial];
             }
             else{
 
-                store[store_index] = '\0';                  //variable string terminated by NULL
+                stored_data[store_index] = '\0';                  //variable string terminated by NULL
                 store_index = 0;
-                if(coefficient == 0  && (strlen(store) != 0)){
+                if(coefficient == 0  && (strlen(stored_data) != 0)){
                         //when there are no coefficient before variable, there are a default variable 1
                     coefficient = 1;
                 }
@@ -292,7 +293,7 @@ int extract_from_expression(string str[], int n)
                 isNegative2 = false;
 
                 //add coefficient number in matrix
-                matrix[i][variable_match(variable, store, &number_of_variable)] += coefficient;
+                matrix[i][isVariable(variable, stored_data, &number_of_variable)] += coefficient;
 
 
                 if(str[i][initial] == '='){
@@ -301,7 +302,7 @@ int extract_from_expression(string str[], int n)
 
                 coefficient = 0;
                 power_index = 1;
-                decimal_point = false;
+                isDecimalpoint = false;
 
 
             }
@@ -320,15 +321,15 @@ int extract_from_expression(string str[], int n)
 int input_controller(string str[])
 {
 
-unsigned int number_of_variable
+unsigned int number_of_variable;
 
-cout<<" Number of variables :  "<<number_of_variable<<endl;
+cout<<"\n Number of variables :  ";
 cin>>number_of_variable;
 getchar();    //for consume ENTER
 
-cout<<" INPUT "<<number_of_variable<<" EQUATIONS \n "<<endl;
+cout<<" \nInput expression like (ax+by+cz......=c)\nINPUT "<<number_of_variable<<" EQUATIONS \n "<<endl;
 
-for(size_t i=0;i<number;i++)
+for(size_t i=0;i<number_of_variable;i++)
 {
     getline(cin,str[i]);
 }
@@ -336,4 +337,56 @@ return number_of_variable;
 }
 
 //this function call required functions for solving linear equation
+/* oid linear_equation_solver()
+{
+    string str[SIZE];
 
+    int num_of_variable = input_controller(str);
+    int numOfVariable = extract_all_from_expression(str,number_of_variable); //create matrix and return number of variables
+
+    solve(numOfVariable);
+}
+*/
+ void linear_equation_solver()
+{
+    string str[SIZE];
+
+    int number = input_controller(str);
+    int num = extract_all_from_expression(str, number);      //create a matrix and return number of variable
+
+    solve(num);                     //print solution
+}
+
+void  polynomial_solver()
+{
+    cout<<" Polynomial Equation solving progressing"<<endl;
+}
+
+//main function
+int main()
+{
+      cout<<"\t\t\t\t-----------------------------------";
+    cout<<"\n\n\t\t\t\t     EQUATON SOLVER & PLOTTER\n\n";
+   cout<<"\t\t\t\t-----------------------------------";
+
+   while(true){
+        int choice;
+        cout<<"\n\tpress 1.Linear algebra\n\n\tpress 2.Polynomial equation\n\n\tpress 3.Exit\n\n----> choice:  ";
+        cin>>choice;
+        //getchar();
+
+            if(choice == 1){
+
+                 linear_equation_solver();
+            }
+            else if(choice == 2){
+                polynomial_solver();
+            }
+           else if(choice == 3){
+            return 0;
+        }
+   }
+
+   return 0;
+
+}
