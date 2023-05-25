@@ -1,6 +1,7 @@
 #include<bits/stdc++.h>
-#include "(header) Linker.h"
-#include "Header1( linear part).h"
+//#include "(header) Linker.h"
+//#include "Header1( linear part).h"
+#include"HEADER.h"
 
 #define space 0
 #define operator_symbol 1
