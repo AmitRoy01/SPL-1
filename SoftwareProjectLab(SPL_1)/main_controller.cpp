@@ -2284,7 +2284,7 @@ int main(void)
         if(choice == 1)
         {
             cout<<"\n\n\n\n\t\t1. INPUT LINEAR  EQUATION\n\t\t...................................."<<endl;
-            solve_linear_equation_with_process();
+            solve_linear_equation();
         }
         else if(choice == 2)
         {
