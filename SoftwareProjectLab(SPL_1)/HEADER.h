@@ -1,7 +1,7 @@
 using namespace std;
 
 
-#define SIZE 20
+#define SIZE 100
 
 
 void solve_polynomial_equation();
