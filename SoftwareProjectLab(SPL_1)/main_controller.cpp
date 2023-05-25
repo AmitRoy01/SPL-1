@@ -1293,7 +1293,6 @@ public:
 
         if (initial_input.size() == 0)
         {
-            //	cout << "No initial input line given\n";
             return whole_process;
         }
 
@@ -1396,17 +1395,6 @@ public:
         }
         return highest_exponent;
     }
-    /*
-    	bool isQuadraticEqation ()
-    	{
-    		bool returnValue = false;
-
-    		if(find_highest_exponent(initial_equation) == 2)
-    			returnValue = true;
-
-    		return returnValue;
-    	}
-    */
     bool isQuadraticEqation (vector <Term> input)
     {
         bool returnValue = false;
@@ -2290,7 +2278,7 @@ int main(void)
         cout<<"\n\n\n\t\t\t\t     WELCOME TO \n\t\t\t      *EQUATON SOLVER & PLOTTER*\n\n\n";
         cout<<"--------------------------------------------------------------------------------------------"<<endl;
         int choice;
-        cout<<"\t\t\t\tWhat type of equation you want to solve?\n"<<endl;
+        cout<<"\t\t\t\tWHAT DO YOU WANT ?\n"<<endl;
         cout<<"\t\t*_*1.LINEAR EQUATION SOLUTION PROCESS \n\n\\n\t\t*_* 2.POLYNOMIAL EQUATION SOLVE \n\n\t\t*_* 3. POLYNOMIAL EQUATION SOLUTION PROCESS (upto power 2)\n\n\t\t*_* 4.GRAPH \n\n\t\t*_* 5. EXIT\n\n ------->      ";
         cin>>choice;
         if(choice == 1)
@@ -2318,7 +2306,8 @@ int main(void)
             }
             else if(optn == 2)
             {
-                Polynomial_Graph();
+
+               Polynomial_Graph();
             }
         }
         else if(choice == 5)
@@ -2339,6 +2328,8 @@ int main(void)
 2x + 6y = 12
 3x -y = 42
 
+x  + y=5
+2x +2y =8
 
 x^2 - 5x + 6 =0
 
@@ -2355,5 +2346,14 @@ x^2 - 8x + 15 =0
 x^2-14x+45=0
 
 x^2 -12x + 37 =0
+
+2x^3 + 3x^2 -11x  - 6 = 0
+
+3x - 2y =12
+x + 4y = 17
+
+
+x^12 + 11 x^ 11 -10 x^10 +9 x^8 -4 x^5 +6x^2 - 3x +9=0
+
 */
 
